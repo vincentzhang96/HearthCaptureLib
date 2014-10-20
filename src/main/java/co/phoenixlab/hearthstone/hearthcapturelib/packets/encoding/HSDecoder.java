@@ -44,11 +44,14 @@ import java.util.*;
 @SuppressWarnings("unchecked")
 public class HSDecoder {
 
+    private static final Map<String, Class<?>> ARRAY_CLASS_CACHE = new HashMap<>();
+
     /**
      * Decodes a CaptureStruct from the given buffer.
+     *
      * @param buffer A ByteBuffer containing the raw bytes.
-     * @param clazz The target CaptureStruct.
-     * @param <T> The subtype of CaptureStruct.
+     * @param clazz  The target CaptureStruct.
+     * @param <T>    The subtype of CaptureStruct.
      * @throws IOException If there was an error reading the struct.
      */
     public static <T extends CaptureStruct> T decode(ByteBuffer buffer, Class<? extends CaptureStruct> clazz) throws IOException {
@@ -64,7 +67,7 @@ public class HSDecoder {
         try {
             ret = (T) clazz.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new RuntimeException("Unable to instantiate CapturePacket " + clazz.getName(), e);
+            throw new RuntimeException("Unable to instantiate CaptureStruct " + clazz.getName(), e);
         }
         HashMap<Field, List> workingArrays = new HashMap<>();
         while (!fieldMap.isEmpty() && buffer.remaining() > 0) {
@@ -156,7 +159,6 @@ public class HSDecoder {
                     dataBuffer.order(ByteOrder.LITTLE_ENDIAN);
                     CaptureStruct packet = HSDecoder.decode(dataBuffer, handlerClazz);
                     if (isArray) {
-                        assert list != null;
                         list.add(packet);
                     } else {
                         field.set(ret, packet);
@@ -327,7 +329,11 @@ public class HSDecoder {
                 field.set(ret, arr);
             }
         } else {
-            Class arrayClass = Array.newInstance(componentType, 0).getClass();
+            Class arrayClass = ARRAY_CLASS_CACHE.get(componentType.getName());
+            if (arrayClass == null) {
+                arrayClass = Array.newInstance(componentType, 0).getClass();
+                ARRAY_CLASS_CACHE.put(componentType.getName(), arrayClass);
+            }
             field.set(ret, list.toArray(Arrays.copyOf(new Object[size], size, arrayClass)));
         }
     }
