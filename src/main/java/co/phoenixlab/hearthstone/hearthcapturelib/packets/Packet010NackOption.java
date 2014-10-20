@@ -33,7 +33,7 @@ import co.phoenixlab.hearthstone.hearthcapturelib.packets.encoding.FieldType;
  *
  * @author Vincent Zhang
  */
-public class Packet010NackOption extends CaptureStruct {
+public class Packet010NackOption extends CapturePacket {
 
 
     @FieldNumber(1)

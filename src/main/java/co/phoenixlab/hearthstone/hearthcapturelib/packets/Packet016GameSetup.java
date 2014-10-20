@@ -33,8 +33,7 @@ import co.phoenixlab.hearthstone.hearthcapturelib.packets.encoding.FieldType;
  *
  * @author Vincent Zhang
  */
-public class Packet016GameSetup
-        extends CaptureStruct {
+public class Packet016GameSetup extends CapturePacket {
 
     @FieldNumber(1)
     @FieldType(GameEnums.DataType.INT32)

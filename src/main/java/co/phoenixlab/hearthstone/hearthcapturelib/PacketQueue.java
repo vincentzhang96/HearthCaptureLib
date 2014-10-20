@@ -24,7 +24,7 @@
 
 package co.phoenixlab.hearthstone.hearthcapturelib;
 
-import co.phoenixlab.hearthstone.hearthcapturelib.packets.CaptureStruct;
+import co.phoenixlab.hearthstone.hearthcapturelib.packets.CapturePacket;
 import co.phoenixlab.hearthstone.hearthcapturelib.tcp.TCPPacket;
 import co.phoenixlab.hearthstone.hearthcapturelib.util.MThread;
 
@@ -42,7 +42,7 @@ public interface PacketQueue {
      * @throws java.lang.InterruptedException If the thread was interrupted while waiting for the next packet.
      */
     @MThread("user")
-    public CaptureStruct next() throws InterruptedException;
+    public CapturePacket next() throws InterruptedException;
 
     /**
      * Retrieves, but does not remove, the next CapturePacket, or returns null if the next CapturePacket is
@@ -51,7 +51,7 @@ public interface PacketQueue {
      * @return The next CapturePacket, or null if there is no available CapturePacket.
      */
     @MThread("user")
-    public CaptureStruct peek();
+    public CapturePacket peek();
 
     /**
      * Checks if there's a CapturePacket available.

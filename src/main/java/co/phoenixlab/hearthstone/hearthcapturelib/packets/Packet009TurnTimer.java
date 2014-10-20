@@ -34,7 +34,7 @@ import co.phoenixlab.hearthstone.hearthcapturelib.packets.encoding.FieldType;
  *
  * @author Vincent Zhang
  */
-public class Packet009TurnTimer extends CaptureStruct {
+public class Packet009TurnTimer extends CapturePacket {
 
 
     @FieldNumber(1)

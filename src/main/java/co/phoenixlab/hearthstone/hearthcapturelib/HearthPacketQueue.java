@@ -24,6 +24,7 @@
 
 package co.phoenixlab.hearthstone.hearthcapturelib;
 
+import co.phoenixlab.hearthstone.hearthcapturelib.packets.CapturePacket;
 import co.phoenixlab.hearthstone.hearthcapturelib.packets.CaptureStruct;
 import co.phoenixlab.hearthstone.hearthcapturelib.packets.encoding.HSDecoder;
 import co.phoenixlab.hearthstone.hearthcapturelib.tcp.TCPPacket;
@@ -49,7 +50,7 @@ class HearthPacketQueue
     private final TCPStreamAssembler assembler;
     private final DataInputStream inputStream;
     private final AtomicBoolean closed;
-    private final ArrayBlockingQueue<CaptureStruct> packets;
+    private final ArrayBlockingQueue<CapturePacket> packets;
     private final boolean outbound;
 
     public HearthPacketQueue(TCPStreamAssembler assembler, boolean outbound) {
@@ -61,7 +62,7 @@ class HearthPacketQueue
     }
 
     @Override
-    public CaptureStruct next() throws InterruptedException {
+    public CapturePacket next() throws InterruptedException {
         if (closed.get()) {
             return null;
         }
@@ -71,7 +72,7 @@ class HearthPacketQueue
     public void parseLoop() {
         while (!isClosed()) {
             try {
-                CaptureStruct packet = readPacket();
+                CapturePacket packet = readPacket();
                 if (packet != null) {
                     packets.put(packet);
                 }
@@ -83,7 +84,7 @@ class HearthPacketQueue
         }
     }
 
-    private CaptureStruct readPacket() throws IOException {
+    private CapturePacket readPacket() throws IOException {
         ByteBuffer buffer = ByteBuffer.allocate(4);
         byte[] data = new byte[4];
         inputStream.readFully(data);
@@ -91,13 +92,10 @@ class HearthPacketQueue
         buffer.flip();
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         int packetId = buffer.getInt();
-//        System.out.println(String.format("next packet id %1$s %1$08X", packetId) + (outbound ? " OUT" : " IN"));
         //  If we have an invalid packetId drop the next 2 bytes
         //  (some sort of protocol noise?)
         if ((packetId & 0xFF) == 0) {
-//            System.out.println("Skipping" + (outbound ? " OUT" : " IN"));
-            inputStream.read();
-            inputStream.read();
+            inputStream.skipBytes(2);
             return null;
         }
         buffer.flip();
@@ -107,7 +105,6 @@ class HearthPacketQueue
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         int length = buffer.getInt();
         ByteBuffer dataBuffer = ByteBuffer.allocate(length);
-//        System.out.println(String.format("next packet %1$s %1$08X bytes", length) + (outbound ? " OUT" : " IN"));
         data = new byte[length];
         inputStream.readFully(data);
         dataBuffer.put(data);
@@ -118,12 +115,12 @@ class HearthPacketQueue
             HCapUtils.logger.warning("no packet for type " + packetId + (outbound ? " OUT" : " IN"));
             return null;
         }
-        //        HCapUtils.logger.info((outbound ? "OUT: " : " IN: ") + packet.toJSON());
-        return HSDecoder.decode(dataBuffer, clazz);
+        CapturePacket packet = HSDecoder.decode(dataBuffer, clazz);
+        return packet.setInbound(!outbound);
     }
 
     @Override
-    public CaptureStruct peek() {
+    public CapturePacket peek() {
         if (closed.get()) {
             return null;
         }

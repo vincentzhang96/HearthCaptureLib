@@ -29,7 +29,7 @@ package co.phoenixlab.hearthstone.hearthcapturelib.packets;
  *
  * @author Vincent Zhang
  */
-public class Packet124DebugConsoleResponse extends CaptureStruct {
+public class Packet124DebugConsoleResponse extends CapturePacket {
 
     //  No fields?
 

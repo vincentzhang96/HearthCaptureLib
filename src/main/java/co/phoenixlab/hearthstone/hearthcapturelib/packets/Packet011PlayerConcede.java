@@ -34,7 +34,7 @@ import co.phoenixlab.hearthstone.hearthcapturelib.packets.structs.StructPlatform
  *
  * @author Vincent Zhang
  */
-public class Packet011PlayerConcede extends CaptureStruct {
+public class Packet011PlayerConcede extends CapturePacket {
 
     @FieldNumber(1)
     @FieldType(GameEnums.DataType.INT32)

@@ -32,7 +32,7 @@ import co.phoenixlab.hearthstone.hearthcapturelib.packets.structs.StructPlatform
 /**
  * Selects an option, target, and a suboption. Client to Server only.
  */
-public class Packet002ChooseOption extends CaptureStruct {
+public class Packet002ChooseOption extends CapturePacket {
 
     @FieldNumber(1)
     @FieldType(GameEnums.DataType.INT32)

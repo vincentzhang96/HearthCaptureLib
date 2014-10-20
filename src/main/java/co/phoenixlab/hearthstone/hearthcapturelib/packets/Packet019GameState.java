@@ -34,7 +34,7 @@ import co.phoenixlab.hearthstone.hearthcapturelib.packets.structs.powerhistory.G
  *
  * @author Vincent Zhang
  */
-public class Packet019GameState extends CaptureStruct {
+public class Packet019GameState extends CapturePacket {
 
     @FieldNumber(1)
     @FieldType(GameEnums.DataType.STRUCT)

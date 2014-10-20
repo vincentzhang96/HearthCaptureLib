@@ -34,7 +34,7 @@ import co.phoenixlab.hearthstone.hearthcapturelib.packets.structs.StructOption;
  *
  * @author Vincent Zhang
  */
-public class Packet014AllOptions extends CaptureStruct {
+public class Packet014AllOptions extends CapturePacket {
 
     @FieldNumber(1)
     @FieldType(GameEnums.DataType.INT32)

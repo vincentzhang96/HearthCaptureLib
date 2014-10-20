@@ -35,7 +35,7 @@ import java.security.SecureRandom;
 /**
  * Contains the data for the start of a game. Server to Client only.
  */
-public class Packet007StartGameState extends CaptureStruct {
+public class Packet007StartGameState extends CapturePacket {
 
     @FieldNumber(1)
     @FieldType(GameEnums.DataType.STRUCT)

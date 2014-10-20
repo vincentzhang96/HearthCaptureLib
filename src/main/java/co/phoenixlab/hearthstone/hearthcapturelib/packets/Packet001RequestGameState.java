@@ -29,7 +29,7 @@ package co.phoenixlab.hearthstone.hearthcapturelib.packets;
  *
  * @author Vincent Zhang
  */
-public class Packet001RequestGameState extends CaptureStruct {
+public class Packet001RequestGameState extends CapturePacket {
 
     //  Has no fields.
 

@@ -34,7 +34,7 @@ import co.phoenixlab.hearthstone.hearthcapturelib.packets.structs.StructMouseInf
  *
  * @author Vincent Zhang
  */
-public class Packet015UserUI extends CaptureStruct {
+public class Packet015UserUI extends CapturePacket {
 
     @FieldNumber(1)
     @FieldType(GameEnums.DataType.STRUCT)
