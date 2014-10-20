@@ -83,7 +83,10 @@ public abstract class CaptureStruct {
 
 
     public String toJSON() {
-        Gson g = gson.get();
+        return toJSON(gson.get());
+    }
+
+    public String toJSON(Gson g) {
         return g.toJson(this, getClass());
     }
 
