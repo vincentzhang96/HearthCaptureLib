@@ -41,30 +41,38 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>A simple usage example that simply prints inbound packets to System.out and outbound to System.err:</p>
  * <pre>
  * {@code
- *  HearthCaptureLib hCL = new HearthCaptureLib();
- *     CaptureQueue capQueue = null;
- *     try {
- *         capQueue = hCL.listen();
- *     } catch (InterruptedException | NoSuchElementException e) {
- *         // Handle...
- *         return;
- *     }
- *     CountDownLatch latch = new CountDownLatch(2);
- *     new Thread(() -> {
- *         while(!queue.isClosed()) {
- *             System.out.println(queue.getInboundPackets().next().toJSON());
- *         }
- *         latch.countDown();
- *     }).start();
- *     new Thread(() -> {
- *         while(!queue.isClosed()) {
- *             System.err.println(queue.getOutboundPackets().next().toJSON());
- *         }
- *         latch.countDown();
- *     }).start();
- *     latch.await();
+     HearthCaptureLib hCL = new HearthCaptureLib();
+        CaptureQueue capQueue = null;
+        try {
+            capQueue = hCL.listen();
+        } catch (InterruptedException | NoSuchElementException e) {
+            e.printStackTrace();
+            return;
+        }
+        final CaptureQueue queue = capQueue;
+        CountDownLatch latch = new CountDownLatch(2);
+        new Thread(() -> {
+            try {
+                while (!queue.isClosed()) {
+                    System.out.println(queue.getInboundPackets().next().toJSON());
+                }
+            } catch (InterruptedException ignored) {
+            }
+            latch.countDown();
+        }).start();
+        new Thread(() -> {
+            try {
+                while (!queue.isClosed()) {
+                    System.err.println(queue.getOutboundPackets().next().toJSON());
+                }
+            } catch (InterruptedException ignored) {
+            }
+            latch.countDown();
+        }).start();
+        latch.await();
  * }
  * </pre>
+ * <p>The main method in this class has this as its implementation.</p>
  *
  * @author Vincent Zhang
  */
@@ -95,4 +103,35 @@ public class HearthCaptureLib implements HearthstoneCapturer {
         return result.get();
     }
 
+    public static void main(String[] args) throws Exception {
+        HearthCaptureLib hCL = new HearthCaptureLib();
+        CaptureQueue capQueue = null;
+        try {
+            capQueue = hCL.listen();
+        } catch (InterruptedException | NoSuchElementException e) {
+            e.printStackTrace();
+            return;
+        }
+        final CaptureQueue queue = capQueue;
+        CountDownLatch latch = new CountDownLatch(2);
+        new Thread(() -> {
+            try {
+                while (!queue.isClosed()) {
+                    System.out.println(queue.getInboundPackets().next().toJSON());
+                }
+            } catch (InterruptedException ignored) {
+            }
+            latch.countDown();
+        }).start();
+        new Thread(() -> {
+            try {
+                while (!queue.isClosed()) {
+                    System.err.println(queue.getOutboundPackets().next().toJSON());
+                }
+            } catch (InterruptedException ignored) {
+            }
+            latch.countDown();
+        }).start();
+        latch.await();
+    }
 }
