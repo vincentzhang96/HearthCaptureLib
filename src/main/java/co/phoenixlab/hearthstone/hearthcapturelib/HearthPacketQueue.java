@@ -47,6 +47,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 class HearthPacketQueue
         implements PacketQueue {
 
+    static class SignalPacket extends CapturePacket {
+
+    }
+
+    private static final SignalPacket SIGNAL_PACKET = new SignalPacket();
+
     private final TCPStreamAssembler assembler;
     private final DataInputStream inputStream;
     private final AtomicBoolean closed;
@@ -66,7 +72,11 @@ class HearthPacketQueue
         if (closed.get()) {
             return null;
         }
-        return packets.take();
+        CapturePacket packet = packets.take();
+        if(packet == SIGNAL_PACKET) {
+            throw new InterruptedException();
+        }
+        return packet;
     }
 
     public void parseLoop() {
@@ -146,5 +156,9 @@ class HearthPacketQueue
     @Override
     public void close() {
         closed.set(true);
+        try {
+            packets.put(SIGNAL_PACKET);
+        } catch (InterruptedException ignore) {
+        }
     }
 }

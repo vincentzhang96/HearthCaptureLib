@@ -193,7 +193,6 @@ public class NetInterfaceListener implements Runnable {
                                 //  FIN
                                 if ((tcpPacket.tcpFlags & 0x01) != 0) {
                                     HCapUtils.logger.info(logString("End of stream - FIN"));
-                                    captureQueue.close();
                                     break;
                                 }
                             }
@@ -206,6 +205,7 @@ public class NetInterfaceListener implements Runnable {
                             if (inDumper != null) {
                                 inDumper.close();
                             }
+                            captureQueue.close();
                         }
                     } else {
                         HCapUtils.logger.severe(logString("Other thread beat us or there are multiple Hearthstone clients open?"));
