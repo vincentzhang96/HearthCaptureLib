@@ -50,7 +50,7 @@ public abstract class CaptureStruct {
 
 
     public CaptureStruct() {
-        _structName = getClass().getSimpleName();
+        _structName = getClass().getName();
     }
 
 

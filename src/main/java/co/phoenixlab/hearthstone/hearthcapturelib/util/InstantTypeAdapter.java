@@ -17,7 +17,7 @@ import java.util.Date;
  */
 public class InstantTypeAdapter extends TypeAdapter<Instant> {
 
-    private static final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss:SSS");
+    private static final SimpleDateFormat format = new SimpleDateFormat("YYMMdd HH:mm:ss:SSS");
 
     @Override
     public void write(JsonWriter jsonWriter, Instant instant) throws IOException {
