@@ -24,17 +24,11 @@
 
 package co.phoenixlab.hearthstone.hearthcapturelib.packets;
 
+import co.phoenixlab.hearthstone.hearthcapturelib.util.InstantTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Date;
 
 /**
  * Abstract class that represents a data structure from a Hearthstone packet, including the packets themselves.
@@ -44,33 +38,11 @@ import java.util.Date;
 public abstract class CaptureStruct {
 
     protected static final ThreadLocal<Gson> gson;
-    private static final SimpleDateFormat format;
 
     static {
-        format = new SimpleDateFormat("HH:mm:ss:SSS");
         gson = ThreadLocal.withInitial(() -> new GsonBuilder().
                 setPrettyPrinting().
-                registerTypeAdapter(Instant.class, new TypeAdapter<Instant>() {
-
-
-                    @Override
-                    public void write(JsonWriter jsonWriter, Instant instant) throws IOException {
-                        if (instant == null) {
-                            jsonWriter.nullValue();
-                            return;
-                        }
-                        jsonWriter.value(format.format(new Date(instant.toEpochMilli())));
-                    }
-
-                    @Override
-                    public Instant read(JsonReader jsonReader) throws IOException {
-                        try {
-                            return Instant.ofEpochMilli(format.parse(jsonReader.nextString()).getTime());
-                        } catch (ParseException e) {
-                            throw new IOException(e);
-                        }
-                    }
-                }).
+                registerTypeAdapter(Instant.class, new InstantTypeAdapter()).
                 create());
     }
 
