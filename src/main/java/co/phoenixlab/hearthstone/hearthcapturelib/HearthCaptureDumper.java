@@ -27,6 +27,8 @@ import static java.nio.file.StandardOpenOption.*;
  */
 public class HearthCaptureDumper implements Closeable {
 
+    private static int version = 1;
+
     private final BufferedWriter writer;
     private final Object writeLock;
     private final Gson gson;
@@ -47,6 +49,9 @@ public class HearthCaptureDumper implements Closeable {
         if (queue.isClosed()) {
             throw new IllegalStateException("CaptureQueue cannot be closed when calling dump()!");
         }
+        //  Header
+        writer.write(String.format("HCLDMP %s", version));
+        writer.write("startTime " + queue.getInboundPackets().getCaptureStartTime());
         cyclicBarrier = new CyclicBarrier(3);
         HearthCaptureLib.executor.execute(() -> run(true));
         HearthCaptureLib.executor.execute(() -> run(false));
@@ -121,4 +126,6 @@ public class HearthCaptureDumper implements Closeable {
         }
         HCapUtils.logger.info("Application terminated.");
     }
+
+
 }

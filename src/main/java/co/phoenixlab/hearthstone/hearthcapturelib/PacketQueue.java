@@ -42,7 +42,7 @@ public interface PacketQueue {
      * @throws java.lang.InterruptedException If the thread was interrupted while waiting for the next packet.
      */
     @MThread("user")
-    public CapturePacket next() throws InterruptedException;
+    CapturePacket next() throws InterruptedException;
 
     /**
      * Retrieves, but does not remove, the next CapturePacket, or returns null if the next CapturePacket is
@@ -51,7 +51,7 @@ public interface PacketQueue {
      * @return The next CapturePacket, or null if there is no available CapturePacket.
      */
     @MThread("user")
-    public CapturePacket peek();
+    CapturePacket peek();
 
     /**
      * Checks if there's a CapturePacket available.
@@ -59,7 +59,7 @@ public interface PacketQueue {
      * @return true if the next CapturePacket is immediately available, false otherwise.
      */
     @MThread("user")
-    public boolean hasNext();
+    boolean hasNext();
 
     /**
      * Checks if the queue has been closed by the producer to indicate end of stream.
@@ -67,7 +67,7 @@ public interface PacketQueue {
      * @return true if the queue is closed, false if open.
      */
     @MThread("user")
-    public boolean isClosed();
+    boolean isClosed();
 
     /**
      * Adds a raw packet to be processed.
@@ -75,12 +75,17 @@ public interface PacketQueue {
      * @param packet The raw packet to add.
      */
     @MThread("listener")
-    public void put(TCPPacket packet);
+    void put(TCPPacket packet);
 
     /**
      * Closes the queue, indicating end of stream.
      */
     @MThread("listener")
-    public void close();
+    void close();
+
+    /**
+     * Get the time at which this packet queue was opened.
+     */
+    long getCaptureStartTime();
 
 }

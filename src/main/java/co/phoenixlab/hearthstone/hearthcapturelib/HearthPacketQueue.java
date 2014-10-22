@@ -58,13 +58,15 @@ class HearthPacketQueue
     private final AtomicBoolean closed;
     private final ArrayBlockingQueue<CapturePacket> packets;
     private final boolean outbound;
+    private final long startTime;
 
-    public HearthPacketQueue(TCPStreamAssembler assembler, boolean outbound) {
+    public HearthPacketQueue(TCPStreamAssembler assembler, boolean outbound, long startTime) {
         this.assembler = assembler;
         inputStream = new DataInputStream(assembler);
         packets = new ArrayBlockingQueue<>(1000);
         closed = new AtomicBoolean(false);
         this.outbound = outbound;
+        this.startTime = startTime;
     }
 
     @Override
@@ -126,7 +128,9 @@ class HearthPacketQueue
             return null;
         }
         CapturePacket packet = HSDecoder.decode(dataBuffer, clazz);
-        return packet.setInbound(!outbound);
+        return packet.
+                setInbound(!outbound).
+                setCaptureDeltaTime(System.currentTimeMillis() - startTime);
     }
 
     @Override
@@ -160,5 +164,10 @@ class HearthPacketQueue
             packets.put(SIGNAL_PACKET);
         } catch (InterruptedException ignore) {
         }
+    }
+
+    @Override
+    public long getCaptureStartTime() {
+        return startTime;
     }
 }

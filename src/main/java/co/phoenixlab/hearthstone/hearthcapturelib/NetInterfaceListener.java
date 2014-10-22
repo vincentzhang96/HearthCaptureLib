@@ -147,8 +147,9 @@ public class NetInterfaceListener implements Runnable {
                     HCapUtils.logger.info(logString("Got Aurora handshake"));
                     final TCPStreamAssembler inboundAssembler = new TCPStreamAssembler();
                     final TCPStreamAssembler outboundAssembler = new TCPStreamAssembler();
-                    final HearthPacketQueue inboundQueue = new HearthPacketQueue(inboundAssembler, false);
-                    final HearthPacketQueue outboundQueue = new HearthPacketQueue(outboundAssembler, true);
+                    long startTime = System.currentTimeMillis();
+                    final HearthPacketQueue inboundQueue = new HearthPacketQueue(inboundAssembler, false, startTime);
+                    final HearthPacketQueue outboundQueue = new HearthPacketQueue(outboundAssembler, true, startTime);
                     final CaptureQueue captureQueue = new CaptureQueue(outboundQueue, inboundQueue);
                     //  DEBUG DUMPING
                     DebugDumper outDumper = null;

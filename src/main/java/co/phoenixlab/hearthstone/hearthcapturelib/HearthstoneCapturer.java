@@ -40,7 +40,7 @@ public interface HearthstoneCapturer {
      * @throws java.lang.InterruptedException   If the thread was interrupted.
      * @throws java.util.NoSuchElementException If there are no enabled network interfaces on the system.
      */
-    public CaptureQueue listen() throws InterruptedException, NoSuchElementException;
+    CaptureQueue listen() throws InterruptedException, NoSuchElementException;
 
 
 }
