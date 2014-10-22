@@ -1,6 +1,7 @@
 package co.phoenixlab.hearthstone.hearthcapturelib;
 
 import co.phoenixlab.hearthstone.hearthcapturelib.packets.CapturePacket;
+import co.phoenixlab.hearthstone.hearthcapturelib.util.HCapUtils;
 import co.phoenixlab.hearthstone.hearthcapturelib.util.InstantTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -17,6 +18,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.logging.Level;
 
 import static java.nio.file.StandardOpenOption.*;
 
@@ -56,7 +58,7 @@ public class HearthCaptureDumper implements Closeable {
             throw new RuntimeException(e);
         }
         writer.flush();
-        System.out.println("Finished");
+        HCapUtils.logger.info("Finished");
     }
 
     private void run(boolean inbound) {
@@ -70,14 +72,13 @@ public class HearthCaptureDumper implements Closeable {
             }
         } catch (InterruptedException | BrokenBarrierException ignored) {
         } catch (IOException e) {
-            System.err.println("Error while writing packets.");
-            e.printStackTrace(System.err);
+            HCapUtils.logger.log(Level.SEVERE, "Error while writing packets.", e);
         } finally {
             try {
                 cyclicBarrier.await();
             } catch (InterruptedException | BrokenBarrierException ignored) {
             }
-            System.out.println("Finished " + (inbound ? "inbound" : "outbound") + " packet read");
+            HCapUtils.logger.info("Finished " + (inbound ? "inbound" : "outbound") + " packet read");
         }
     }
 
@@ -104,21 +105,20 @@ public class HearthCaptureDumper implements Closeable {
                 Path path = Paths.get(args[0]);
                 try (HearthCaptureDumper dumper = new HearthCaptureDumper(path)) {
                     HearthCaptureLib captureLib = new HearthCaptureLib();
-                    System.out.println("Dumping...");
+                    HCapUtils.logger.info("Dumping...");
                     dumper.dump(captureLib.listen());
-                    System.out.println("Dump complete!");
+                    HCapUtils.logger.info("Dump complete!");
                 }
             } catch (InvalidPathException e) {
-                System.err.println("Invalid path specified: " + e.getLocalizedMessage());
+                HCapUtils.logger.severe("Invalid path specified: " + e.getLocalizedMessage());
             } catch (IOException e) {
-                System.err.println("Unable to open file for dumping: ");
-                e.printStackTrace(System.err);
+                HCapUtils.logger.log(Level.SEVERE, "Unable to open file for dumping.", e);
             } catch (InterruptedException e) {
-                System.err.println("Program interrupted.");
+                HCapUtils.logger.warning("Program interrupted.");
             }
         } else {
-            System.err.println("Usage: java -cp HearthCaptureLib.jar co.phoenixlab.hearthstone.hearthcapturelib.CaptureDumper FILE_TO_DUMP_TO");
+            HCapUtils.logger.severe("Usage: java -cp HearthCaptureLib.jar co.phoenixlab.hearthstone.hearthcapturelib.CaptureDumper FILE_TO_DUMP_TO");
         }
-        System.out.println("Application terminated.");
+        HCapUtils.logger.info("Application terminated.");
     }
 }
