@@ -187,7 +187,7 @@ public class HearthCaptureDumpReader implements AutoCloseable {
                 HCapUtils.logger.warning("Program interrupted.");
             }
         } else {
-            HCapUtils.logger.severe("Usage: java -cp HearthCaptureLib.jar co.phoenixlab.hearthstone.hearthcapturelib.CaptureDumpReader FILE_TO_DUMP_TO");
+            HCapUtils.logger.severe("Usage: java -cp HearthCaptureLib.jar co.phoenixlab.hearthstone.hearthcapturelib.HearthCaptureDumpReader FILE_TO_DUMP_TO");
         }
         HCapUtils.logger.info("Application terminated.");
     }
