@@ -105,8 +105,8 @@ public class HearthCaptureDumpReader implements AutoCloseable {
         } catch (NumberFormatException nfe) {
             throw new IOException("Invalid HearthCaptureLib dump: Invalid capture start timestamp " + line);
         }
-        outQueue = new DumpedPacketQueue(startTime, true);
-        inQueue = new DumpedPacketQueue(startTime, false);
+        outQueue = new DumpedPacketQueue(startTime);
+        inQueue = new DumpedPacketQueue(startTime);
         queue = new CaptureQueue(outQueue, inQueue);
         HearthCaptureLib.executor.execute(this::parse);
         return queue;
@@ -195,15 +195,13 @@ public class HearthCaptureDumpReader implements AutoCloseable {
     private class DumpedPacketQueue implements PacketQueue {
 
         private final ArrayBlockingQueue<CapturePacket> packets;
-        private final boolean outbound;
         private final long startTime;
         private AtomicBoolean closed;
 
-        private DumpedPacketQueue(long startTime, boolean outbound) {
+        private DumpedPacketQueue(long startTime) {
             //  Large buffer because we're reading a dump from disk, as opposed to receiving them in real time.
             packets = new ArrayBlockingQueue<>(0xFFFF);
             this.startTime = startTime;
-            this.outbound = outbound;
             closed = new AtomicBoolean(false);
         }
 
