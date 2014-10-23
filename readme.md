@@ -33,7 +33,7 @@ Features
 Usage
 ----
 
-HCL's main purpose is to be used as a library by another program. In most cases the primary interface with HCL is by creating a new `HearthCaptureLib` object and calling its `listen()` method.
+HCL's main purpose is to be used as a library by another program. In most cases the primary interface with HCL is through creating a new `HearthCaptureLib` object and calling its `listen()` method.
 
 #####Manually
 
@@ -41,7 +41,7 @@ HCL's main purpose is to be used as a library by another program. In most cases 
 2. [Download jNetPcap 1.3.0](http://jnetpcap.com/download) for your platform
 3. Extract jNetPcap.jar and include it in your classpath
 4. Extract the jNetPcap native library (.dll on Windows, .so for generic Linux, etc) to your program's runtime directory 
-5. Import `co.phoenixlab.hearthstone.hearthcapturelib.*` to your class and use it
+5. Import `co.phoenixlab.hearthstone.hearthcapturelib.*` to your class
 
 #####Using Maven
 
@@ -83,9 +83,12 @@ latch.await();
 
 #####Utilities
 HCL also provides two utilities that can be used programmatically or from the command line. Both are in the package `co.phoenixlab.hearthstone.hearthcapturelib`.
+
 * **HearthCaptureDumper** - Listens for a Hearthstone game and dumps the parsed packets to file.  
+  * `(new HearthCaptureDumper(path)).dump(captureQueue);`
   * `java -cp HearthCaptureLib.jar co.phoenixlab.hearthstone.hearthcapturelib.HearthCaptureDumper FILE_TO_DUMP_TO`
 * **HearthCaptureDumpReader** - Reads a dump file created by `HearthCaptureDumper` and returns a `CaptureQueue` containing those packets.
+  * `CaptureQueue queue = (new HearthCaptureDumpReader(path)).read();`
   * `java -cp HearthCaptureLib.jar co.phoenixlab.hearthstone.hearthcapturelib.HearthCaptureDumpReader FILE_TO_READ_FROM`
 
 Known Issues
