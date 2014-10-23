@@ -2,7 +2,7 @@ HearthCaptureLib
 =================
 
 HearthCaptureLib (HCL for short) is a Java library that captures and parses packets from a 
-Hearthstone game session running on the main machine.
+Hearthstone game session running on the same machine.
 
 Requires Java 8
 
@@ -86,7 +86,7 @@ HCL also provides two utilities that can be used programmatically or from the co
 * **HearthCaptureDumper** - Listens for a Hearthstone game and dumps the parsed packets to file.  
   * `java -cp HearthCaptureLib.jar co.phoenixlab.hearthstone.hearthcapturelib.HearthCaptureDumper FILE_TO_DUMP_TO`
 * **HearthCaptureDumpReader** - Reads a dump file created by `HearthCaptureDumper` and returns a `CaptureQueue` containing those packets.
-  * `java -cp HearthCaptureLib.jar co.phoenixlab.hearthstone.hearthcapturelib.HearthCaptureDumpReader FILE_TO_DUMP_TO`
+  * `java -cp HearthCaptureLib.jar co.phoenixlab.hearthstone.hearthcapturelib.HearthCaptureDumpReader FILE_TO_READ_FROM`
 
 Known Issues
 ----
