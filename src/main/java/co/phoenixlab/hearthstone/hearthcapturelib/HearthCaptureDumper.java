@@ -50,8 +50,8 @@ public class HearthCaptureDumper implements Closeable {
             throw new IllegalStateException("CaptureQueue cannot be closed when calling dump()!");
         }
         //  Header
-        writer.write(String.format("HCLDMP %s", version));
-        writer.write("startTime " + queue.getInboundPackets().getCaptureStartTime());
+        writer.write(String.format("HCLDMP %s%n", version));
+        writer.write(String.format("startTime %s%n", queue.getInboundPackets().getCaptureStartTime()));
         cyclicBarrier = new CyclicBarrier(3);
         HearthCaptureLib.executor.execute(() -> run(true));
         HearthCaptureLib.executor.execute(() -> run(false));
