@@ -160,9 +160,13 @@ class HearthPacketQueue
     @Override
     public void close() {
         closed.set(true);
-        try {
-            packets.put(SIGNAL_PACKET);
-        } catch (InterruptedException ignore) {
+        boolean cleared = false;
+        while (!cleared) {
+            try {
+                packets.put(SIGNAL_PACKET);
+                cleared = true;
+            } catch (InterruptedException ignore) {
+            }
         }
     }
 

@@ -41,7 +41,6 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
@@ -60,7 +59,6 @@ public class HearthCaptureDumpReader implements AutoCloseable {
 
     private final BufferedReader reader;
     private final Gson gson;
-    private CyclicBarrier cyclicBarrier;
     private CaptureQueue queue;
     private DumpedPacketQueue outQueue;
     private DumpedPacketQueue inQueue;
@@ -85,7 +83,7 @@ public class HearthCaptureDumpReader implements AutoCloseable {
             throw new IOException("Invalid HearthCaptureLib dump: Invalid magic");
         }
         line = line.substring("HCLDMP ".length()).trim();
-        int vers = -1;
+        int vers;
         try {
             vers = Integer.parseInt(line);
         } catch (NumberFormatException nfe) {
@@ -157,7 +155,7 @@ public class HearthCaptureDumpReader implements AutoCloseable {
                     HCapUtils.logger.info("Reading dump...");
                     final CaptureQueue queue = dumpReader.read();
                     CountDownLatch latch = new CountDownLatch(2);
-                    new Thread(() -> {
+                    HearthCaptureLib.executor.execute(() -> {
                         try {
                             while (!queue.isClosed()) {
                                 System.out.println(queue.getInboundPackets().next().toJSON());
@@ -165,8 +163,8 @@ public class HearthCaptureDumpReader implements AutoCloseable {
                         } catch (InterruptedException ignored) {
                         }
                         latch.countDown();
-                    }).start();
-                    new Thread(() -> {
+                    });
+                    HearthCaptureLib.executor.execute(() -> {
                         try {
                             while (!queue.isClosed()) {
                                 System.err.println(queue.getOutboundPackets().next().toJSON());
@@ -174,7 +172,7 @@ public class HearthCaptureDumpReader implements AutoCloseable {
                         } catch (InterruptedException ignored) {
                         }
                         latch.countDown();
-                    }).start();
+                    });
                     latch.await();
                     HCapUtils.logger.info("Read complete!");
                 }
@@ -247,9 +245,13 @@ public class HearthCaptureDumpReader implements AutoCloseable {
         @Override
         public void close() {
             closed.set(true);
-            try {
-                packets.put(SIGNAL_PACKET);
-            } catch (InterruptedException ignore) {
+            boolean cleared = false;
+            while (!cleared) {
+                try {
+                    packets.put(SIGNAL_PACKET);
+                    cleared = true;
+                } catch (InterruptedException ignore) {
+                }
             }
         }
 
