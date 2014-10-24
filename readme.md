@@ -14,6 +14,7 @@ Contents
 * [Usage](#usage)
 * [Building](#building)
 * [Contributing](#contributing)
+* [Credits](#credits)
 * [License](#license)
 
 Download
@@ -24,11 +25,12 @@ Coming soon.
 Features
 ----
 
-* Listen on all network interfaces for a Hearthstone start game (`AuroraHandshake`) packet
-* Parse packets from the TCP packet stream
-* Resolve enumerations
-* Dump captures to file
-* Read dump captures
+- [x] Listen on all network interfaces for a Hearthstone start game (`AuroraHandshake`) packet
+- [x] Parse packets from the TCP packet stream
+- [x] Resolve enumerations
+- [x] Dump captures to file
+- [x] Read dump captures
+- [ ] Game Logic Layer - interprets packet stream and converts it into a series of game events ("Player 1 played card X") 
 
 Usage
 ----
@@ -120,6 +122,12 @@ Contributing
 ----
 
 TODO
+
+Credits
+----
+
+* [6f/Hearthy](https://github.com/6f/Hearthy) - Referenced for packet structure and enumeration values.
+* [HearthstoneJSON](http://hearthstonejson.com/) - Referenced for card data/IDs.
 
 License
 ----
